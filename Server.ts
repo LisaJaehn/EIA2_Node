@@ -1,7 +1,7 @@
 import * as Http from "http";
 import * as Url from "url";
 
-namespace Node {
+namespace Server {
     interface AssocStringString {
         [key: string]: string;
     }
