@@ -60,6 +60,7 @@ namespace Node {
         let query: AssocStringString = Url.parse(_request.url, true).query;
         let a: number = parseInt(query["a"]);
         let b: number = parseInt(query["b"]);
+        
 
         //Schlüssel wird durchgegeben
         
