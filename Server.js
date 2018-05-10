@@ -44,8 +44,11 @@ var Node;
         //Schlüssel wird durchgegeben
         for (let key in query)
             //console.log(query[key]);
-            _response.write("eingegebene Query-Informationen: " + (query[key]) + "<br>");
+            //Ausgabe der Queryinformation (a, b)
+            _response.write("Query-Informationen, die eingegeben wurden: " + (query[key]) + "<br>");
+        //Ausgabe Ergebnis
         _response.write("Das Ergebnis ist: " + (a + b));
+        //Ende, Inforamtion wird zum Nutzer geschickt
         _response.end();
     }
 })(Node || (Node = {}));
