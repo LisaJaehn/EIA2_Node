@@ -36,14 +36,15 @@ var Node;
         let query = Url.parse(_request.url, true).query;
         let a = parseInt(query["a"]);
         let b = parseInt(query["b"]);
-        //Schlüssel wird durchgegeben
-        for (let key in query)
-            console.log(query[key]);
         //Umlautprobleme werden behoben
         _response.setHeader("content-type", "text/html; charset=utf-8");
         _response.setHeader("Access-Control-Allow-Origin", "*");
         //Wenn der Server zugehört und die Daten bearbeitet wurden wird das Ergebnis ausgegben
         _response.write("Ich habe dich gehört<br/>");
+        //Schlüssel wird durchgegeben
+        for (let key in query)
+            //console.log(query[key]);
+            _response.write("eingegebene Query-Informationen: " + (query[key]) + "<br>");
         _response.write("Das Ergebnis ist: " + (a + b));
         _response.end();
     }

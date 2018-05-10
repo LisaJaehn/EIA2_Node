@@ -61,12 +61,6 @@ namespace Node {
         let a: number = parseInt(query["a"]);
         let b: number = parseInt(query["b"]);
         
-
-        //Schlüssel wird durchgegeben
-        
-        for (let key in query) 
-            console.log(query[key]);
-        
         //Umlautprobleme werden behoben
 
         _response.setHeader("content-type", "text/html; charset=utf-8");
@@ -75,6 +69,13 @@ namespace Node {
         //Wenn der Server zugehört und die Daten bearbeitet wurden wird das Ergebnis ausgegben
         
         _response.write("Ich habe dich gehört<br/>");
+        
+        //Schlüssel wird durchgegeben
+        
+        for (let key in query) 
+        //console.log(query[key]);
+        
+        _response.write("eingegebene Query-Informationen: " + (query[key]) + "<br>");
         _response.write("Das Ergebnis ist: " + (a + b));
 
         _response.end();
