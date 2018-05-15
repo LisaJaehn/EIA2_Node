@@ -10,16 +10,27 @@ namespace L06_Interfaces {
         let insertButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById( "insert" );
         let searchButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById( "search" );
         let refreshButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById( "refresh" );
+        
+        //Button für drei Bespieldatensätze
+        
         let exampleButton: HTMLButtonElement = <HTMLButtonElement>document.getElementById( "exampleData" );
         insertButton.addEventListener( "click", insert );
+        
+        //Wenn geklickt wird führe refreshStudents aus
+        
         refreshButton.addEventListener( "click", refreshStudents );
         searchButton.addEventListener( "click", search );
         exampleButton.addEventListener( "click", exampleData )
     }
 
+    
+    //Drei Datensatzbeispiele
 
     function exampleData() {
         for (let i = 0; i < 3; i++) {
+            
+            //Zugriff auf Interface
+            
             let student: L06_Interfaces.Studi = {
                 name: "Nachname " + i,
                 firstname: "Jeff" + i,
@@ -28,6 +39,9 @@ namespace L06_Interfaces {
                 gender: !!Math.round(Math.random()),
                 studiengang: "OMB"
             }
+        
+            //Funktion sendDataToHost, Variable student wird übergeben
+        
             sendDataToHost("addStudent", student)
         }
     }
@@ -62,13 +76,16 @@ namespace L06_Interfaces {
 
         // nur um das auch noch zu zeigen...
         studiSimpleArray.push( studi );
+        
+        //Funktion sendDataToHost, Objekt studi wird übergeben
+        //Methode addStudent
 
         sendDataToHost("addStudent", studi);
     }
 
-
-
-    //Funktion Ausgabe der Information
+    //Serverfunktion refreshStudents wird ausgeführt
+    //Funktion refreshStudents holt sich die Liste der ganzen Daten vom Server
+    //Methode refreshStudents
 
     function refreshStudents(_event: Event): void {
         sendDataToHost("refreshStudents");
@@ -132,26 +149,56 @@ namespace L06_Interfaces {
             alert( "Es wurde kein Student gefunden, bitte versuchen sie es noch einmal." );
         }
     }
+    
+    //Funktion sendDataToHost
+    //Parameter method: string, data: any = undefined
+    //data: any = undefined -> Optionalparameter, muss nicht unbedingt angeben werden(Daten werden schon übergeben)
 
     function sendDataToHost(method: string, data: any = undefined) {
+        
+        //Ausgabe wenn Daten zum Server gesendet werden
+        
         console.log("Sending data to host..");
+        
+        //Variable xhr, XMLHttpRequest wird erstellt
+        
         let xhr: XMLHttpRequest = new XMLHttpRequest();
+        
+        //Dataobjekt wird in ein string umgewandelt, damit es zum Server gesendet werden kann
+        
         let dataString: string = JSON.stringify(data);
+        
+        //true= asynchron
+        //Neue Http Request wird geöffnet
 
         xhr.open("GET", address + method + "?method=" + method + "&data=" + encodeURIComponent(dataString), true);
 
+        //Überprüfen welche Methode ausgeführt werden soll
+        
         if (method == "addStudent") {
+            
+            //Sobald eine Antwort ankommt schreibe die Antwort in die Konsole
+            
             xhr.onload = function () {
                 console.log(xhr.responseText)
             }
         }
         else if (method == "refreshStudents") {
             xhr.onload = function () {
+                
+              //Sobald eine Antwort ankommt ersetze studiHomoAssoc mit der Antwort und führe die Methode refresh aus
+                
                 console.log('Refreshing Students...');
+                
+                //Überschreibe studiHomoAssoc mit der Antwort
+                
                 studiHomoAssoc = JSON.parse(xhr.responseText);
                 refresh();
             }
         }
+        
+        //Sende Request zum Server
+        
         xhr.send();
     }
 }
