@@ -1,7 +1,7 @@
 var L06_Interfaces;
 (function (L06_Interfaces) {
     window.addEventListener("load", init);
-    let address = "https://eia2node257455.herokuapp.com";
+    let address = "https://eia2node257455.herokuapp.com/";
     function init(_event) {
         console.log("Init");
         //Enventlistener auf Button übergeben
