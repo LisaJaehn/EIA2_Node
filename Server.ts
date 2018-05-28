@@ -1,34 +1,28 @@
+//Diese Aufgabe wurde in Gruppenarbeit erstellt
+
 //Bindet Url Modul mit ein
 
 import * as Url from "url";
 
-//HTTP Objekt wird im Code erstellt 
+//HTTP Objekt wird im Code erstellt
 //Interpreter sucht nach jedem möglichen Import im http- Modul  und wird ihn einzeln an das http- Objekt im Code anhängen
 
 import * as Http from "http";
 
 //namespace erstellen
-
 namespace Node {
-
-    //Interface erstellen
+    let studis: L06_Interfaces.Studis = {};
 
     interface AssocStringString {
-
-        //String als Schlüssel, der Wert ist ebenfalls ein String
-        //Homogenes assoziatives Array
-
-        [key: string]: string;
+        [key: string]: string | string[];
     }
 
-    //Port= Hafen oder Türe, in die Daten zurück kommen können
-    //Variable port wird erstellt, als number
-    //process.env.PORT= Port wird als Umgebungsvariable festgelegt, um dem Webserver mitzuteilen, welcher Port überwacht werden soll.
+    //Variable port wird erstellt, eine number wird erwartet
+    //Infos über Maschine/Umgebung, Maschine gibt den Port vor
 
     let port: number = process.env.PORT;
 
-    //Wenn der Port nicht definiert ist, liegt er bei Nummer 8100
-    //8100 (Portnummer) ist der Port, dem der Server zuhören soll
+    //Wenn der die Portnummer undefiniert ist wird Port 8100 geöffnet
 
     if ( port == undefined )
         port = 8100;
@@ -38,22 +32,23 @@ namespace Node {
     let server: Http.Server = Http.createServer();
 
     //Wenn der Server zuhört, wird die Funktion handleListen ausgeführt
+    //Nur für uns, das wir wissen, dass der Server lauscht
 
     server.addListener( "listening", handleListen );
 
-    // Server beibringen auf etwas zu hören
+    // Server beibringen auf etwas zu hören auf einem gewissen Port
+    //Sobald ein request mitkommt wir function handleRequest ausgeführt
 
     server.addListener( "request", handleRequest );
+    
+    //Lausche, damit wird auch der evenet-Listener gefeuert
+    
     server.listen( port );
 
-    //Funktion handleListen wird erstellt, wenn der Server zuhört wird in der Konsole "Ich höre" ausgegeben
-    //In der Funktion werden keine Parameter benötigt
+    //Funktion handleListen wird erstellt
 
     function handleListen(): void {
-
-        //Ausgabe im Terminal bzw. Konsole
-
-        console.log( "Ich höre?" );
+           console.log("ich höre" + port);
     }
 
     //Funktion handleRequest wird erstellt, 2 Parameter werden festgelegt, ohne Rückgabewert
@@ -63,52 +58,47 @@ namespace Node {
 
     function handleRequest( _request: Http.IncomingMessage, _response: Http.ServerResponse ): void {
 
-        //Ausgabe im Terminal bzw. Konsole
+        //Die Headers sind dazu da, um von anderen Servern zugreifen zu können
+        //Access-Control-Allow-Origin= Sicherheitsfeature
 
-        console.log( "Ich höre Stimmen!" );
+        _response.setHeader( 'Access-Control-Allow-Origin', '*' );
+       // _response.setHeader( 'Access-Control-Request-Method', '*' );
 
-        //Variable query wird erstellt
-        //Übersetzung in ein assoziatives Array
-        // umwandeln von /?a=10&b=20 in ein JavaScript-Objekt
+        //Options: Um abzufragen, ob man auf den Server zugreifen kann
+        //GET: Um Antwort zurück zu bekommen
+
+     //   _response.setHeader( 'Access-Control-Allow-Methods', 'OPTIONS, GET' );
+     //   _response.setHeader( 'Access-Control-Allow-Headers', '*' );
+
+        //Aus string ein Objekt machen
+        //Url.parse= Funktion/Methode
+        //_request.url= Auf reinkommende Nachricht, Url zugreifen
+        //true= query wird zum Objekt, false= query wird zum string
 
         let query: AssocStringString = Url.parse( _request.url, true ).query;
+        //console.log(query);
 
-        //Definiere a als Variable
+        //Schaut nach welche Methode angegeben wurde
+        //Wenn die Methode addStudent ist füge Student zur Liste hinzu
+        //Gebe als Antwort "Student added!"
 
-        let a: number = parseInt( query["a"] );
+        _response.write("Hallo");
+        
+        if ( query["method"] == "addStudent" ) {
+            let student = <L06_Interfaces.Studi>JSON.parse( query["data"].toString() );
+            studis[student.matrikel.toString()] = student;
+            _response.write( "Student added!" );
+            //_response.end();
+        }
 
-        //Definiere a als Variable
+        //Wenn die Methode refreshStudents ist, gebe die Liste der Studenten als Antwort
+        //stringify: Objekt wird zum string
 
-        let b: number = parseInt( query["b"] );
-
-        //Umlautprobleme werden behoben, Schriftart wird dadurch ebenfalls geändert
-
-        _response.setHeader( "content-type", "text/html; charset=utf-8" );
-
-        //Wird für alle zugänglich gemacht
-
-        _response.setHeader( "Access-Control-Allow-Origin", "*" );
-
-        //Ausgabe im Terminal bzw. Konsole
-
-        _response.write( "Ich habe dich gehört<br/>" );
-
-        //Schlüssel wird durchgegeben
-
-        for ( let key in query )
-            //console.log(query[key]);
-
-            //Ausgabe der Queryinformation (a, b)
-
-            _response.write( "Query-Informationen, die eingegeben wurden: " + ( query[key] ) + "<br>" );
-
-        //Wenn der Server zugehört und die Daten bearbeitet wurden wird das Ergebnis ausgegben
-        //Lösung erscheint im Browserfenster
-
-        _response.write( "Das Ergebnis ist: " + ( a + b ) );
-
-        //Ende, Inforamtion wird zum Nutzer geschickt
-
+        if ( query["method"] == "refreshStudents" ) {
+            _response.write( JSON.stringify( studis ) );
+           // _response.end();
+        }
+        
         _response.end();
     }
 }
