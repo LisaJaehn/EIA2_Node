@@ -27,7 +27,7 @@ var Node;
     server.listen(port);
     //Funktion handleListen wird erstellt
     function handleListen() {
-        console.log("ich höre" + port);
+        console.log("ich höre... xd" + port);
     }
     //Funktion handleRequest wird erstellt, 2 Parameter werden festgelegt, ohne Rückgabewert
     //Die einkommenden Information werden bearbeitet und wieder zurück geschickt
@@ -51,16 +51,28 @@ var Node;
         //Schaut nach welche Methode angegeben wurde
         //Wenn die Methode addStudent ist füge Student zur Liste hinzu
         //Gebe als Antwort "Student added!"
-        _response.write("Hallo");
         if (query["method"] == "addStudent") {
             let student = JSON.parse(query["data"].toString());
             studis[student.matrikel.toString()] = student;
             _response.write("Student added!");
         }
-        //Wenn die Methode refreshStudents ist, gebe die Liste der Studenten als Antwort
-        //stringify: Objekt wird zum string
-        if (query["method"] == "refreshStudents") {
+        else if (query["method"] == "refreshStudents") {
             _response.write(JSON.stringify(studis));
+        }
+        else if (query["method"] == "searchStudent") {
+            let matrikel = query["data"].substring(1, query["data"].length - 1);
+            //Studentenliste wird nach Matrikel durchsucht
+            let student = studis[matrikel];
+            //Wenn Student nicht undefined ist wird der gefundene Student ausgegeben
+            if (student != undefined) {
+                _response.write(JSON.stringify(student));
+            }
+            else {
+                _response.write("undefined");
+            }
+        }
+        else {
+            _response.write("Hallo");
         }
         _response.end();
     }
