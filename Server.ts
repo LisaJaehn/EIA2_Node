@@ -63,7 +63,7 @@ namespace Node {
 
         _response.setHeader( 'Access-Control-Allow-Origin', '*' );
        // _response.setHeader( 'Access-Control-Request-Method', '*' );
-
+ 
         //Options: Um abzufragen, ob man auf den Server zugreifen kann
         //GET: Um Antwort zurück zu bekommen
 
@@ -71,7 +71,7 @@ namespace Node {
      //   _response.setHeader( 'Access-Control-Allow-Headers', '*' );
 
         //Aus string ein Objekt machen
-        //Url.parse= Funktion/Methode
+        //Url.parse= Funktion/Methode 
         //_request.url= Auf reinkommende Nachricht, Url zugreifen
         //true= query wird zum Objekt, false= query wird zum string
 
