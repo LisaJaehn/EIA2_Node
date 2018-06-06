@@ -1,4 +1,4 @@
-namespace L06_Interfaces {
+namespace L07_Interfaces {
     // Struktur des heterogenen assoziativen Arrays als Datensatz für eine studierende Person
     export interface Studi {
         name: string;

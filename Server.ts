@@ -11,7 +11,7 @@ import * as Http from "http";
 
 //namespace erstellen
 namespace Node {
-    let studis: L06_Interfaces.Studis = {};
+    let studis: L07_Interfaces.Studis = {};
 
     interface AssocStringString {
         [key: string]: string | string[];
@@ -83,7 +83,7 @@ namespace Node {
         //Gebe als Antwort "Student added!"
         
         if ( query["method"] == "addStudent" ) {
-            let student = <L06_Interfaces.Studi>JSON.parse( query["data"].toString() );
+            let student = <L07_Interfaces.Studi>JSON.parse( query["data"].toString() );
             studis[student.matrikel.toString()] = student;
             _response.write( "Student added!" );
             //_response.end();
