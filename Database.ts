@@ -1,13 +1,22 @@
+///<reference path="node.d.ts"/>
+///<reference path="mongodb.d.ts"/>
+
+
 import * as Mongo from "mongodb";
+
+import * as Server from "./Server";
+
 console.log( "Database starting" );
 
 let databaseURL: string = "mongodb://localhost:27017";
-let databaseName: string = "Test";
+let databaseName: string = "database_mongodb";
 let db: Mongo.Db;
 let students: Mongo.Collection;
 
 
+
 if ( process.env.NODE_ENV == "production" ) {
+    //    databaseURL = "mongodb://username:password@hostname:port/database";
     databaseURL = "mongodb://Testuser:testpasswort1@ds253959.mlab.com:53959/database_mongodb";
     databaseName = "database_mongo";
 }
@@ -24,8 +33,27 @@ function handleConnect( _e: Mongo.MongoError, _db: Mongo.Db ): void {
     }
 }
 
-export function insert( _doc: Studi ): void {
-    students.insertOne( _doc, handleInsert );
+
+export function insert(_student: Server.Studi): void {
+    let _name: string = _student.name;
+    let _firstname: string = _student.firstname;
+    let matrikel: string = _student.matrikel.toString();
+    let _age: number = _student.age;
+    let _gender: boolean = _student.gender;
+    let _studiengang: string = _student.studiengang;
+
+    let studi: Server.Studi;
+
+    studi = {
+        name: _name,
+        firstname: _firstname,
+        matrikel: parseInt( matrikel ),
+        age: _age,
+        gender: _gender,
+        studiengang: _studiengang
+    };
+
+    students.insertOne(studi, handleInsert);
 }
 
 function handleInsert( _e: Mongo.MongoError ): void {
@@ -33,14 +61,27 @@ function handleInsert( _e: Mongo.MongoError ): void {
 }
 
 
-export function findAll( _callback: Function ): void {
-    var cursor: Mongo.Cursor = students.find();
-    cursor.toArray( prepareAnswer );
-
-    function prepareAnswer( _e: Mongo.MongoError, studentArray: Studi[] ): void {
-        if ( _e )
-            _callback( "Error" + _e );
+export function findAll(_callback: Function): void {
+    let cursor: Mongo.Cursor = students.find();
+    cursor.toArray((_e: Mongo.MongoError, _result: Server.Studi[]) => {
+        if (_e)
+            _callback("Da war ein Fehler " + _e, false);
         else
-            _callback( JSON.stringify( studentArray ) );
-    }
+            _callback(JSON.stringify(_result), true)
+    })
+
 }
+
+export function findStudent(_callback: Function, matrikel: number) {
+    let cursor: Mongo.Cursor = students.find({"matrikel": matrikel});
+    cursor.toArray((_e: Mongo.MongoError, _result: Server.Studi[]) => {
+        if (_e)
+            _callback("Ich mag Fehler nicht :( " + _e, false);
+        else {
+            if (_result.length >= 1) {
+                _callback(JSON.stringify(_result[0]), true)
+            }
+        }
+    })
+}
+
