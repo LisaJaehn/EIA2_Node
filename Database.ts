@@ -18,7 +18,7 @@ let students: Mongo.Collection;
 if ( process.env.NODE_ENV == "production" ) {
     //    databaseURL = "mongodb://username:password@hostname:port/database";
     databaseURL = "mongodb://Testuser:testpasswort1@ds253959.mlab.com:53959/database_mongodb";
-    databaseName = "database_mongo";
+    databaseName = "database_mongodb";
 }
 
 Mongo.MongoClient.connect( databaseURL, handleConnect );
